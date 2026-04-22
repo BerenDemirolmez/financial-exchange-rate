@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Financial Exchange Rate Project</title>
+    <link rel="stylesheet" href="./styles.css?v=20260421ecb" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <div class="brand-block"></div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="hero-kicker">Data Hub</p>
+          <h1>Financial Exchange Rate Project</h1>
+          <nav class="hero-buttons" aria-label="Sections">
+            <a class="hero-button hero-button-active" href="#explorer">Explorer</a>
+            <a class="hero-button" href="#method">Method</a>
+            <a class="hero-button" href="#data">Data</a>
+          </nav>
+          <p class="lede">
+            The FER Data Hub contains interactive visualizations of quarterly debt-based financial exchange rate indices for euro-area countries. Use the explorer below to compare asset, liability, and net FER series across countries.
+          </p>
+        </div>
+      </section>
+
+      <section id="explorer" class="controls card">
+        <div class="controls-heading">
+          <h2>Explorer Filters</h2>
+          <p>Select countries, metrics, and scope to compare quarterly FER series.</p>
+        </div>
+        <div class="control">
+          <label for="countrySelect">Countries</label>
+          <select id="countrySelect" multiple size="6"></select>
+          <p class="help-text">Hold Command on Mac or Ctrl on Windows to select multiple countries.</p>
+        </div>
+        <div class="control">
+          <label for="metric">Metrics</label>
+          <select id="metric" multiple size="6">
+            <option value="asset_index">Asset FER debt</option>
+            <option value="liability_index">Liability FER debt</option>
+            <option value="net_index">Net FER</option>
+            <option value="asset_coverage">Asset coverage</option>
+            <option value="liability_coverage">Liability coverage</option>
+            <option value="net_coverage">Net coverage</option>
+          </select>
+          <p class="help-text">Hold Command on Mac or Ctrl on Windows to select multiple metrics.</p>
+        </div>
+        <div class="control">
+          <label for="sectorSelect">Sector</label>
+          <select id="sectorSelect">
+            <option value="aggregate">Aggregate other debt</option>
+            <option value="bank" disabled>Bank (future)</option>
+            <option value="nbfi" disabled>NBFI (future)</option>
+            <option value="nfc" disabled>NFC (future)</option>
+            <option value="government" disabled>Government (future)</option>
+          </select>
+          <p class="help-text">Sector-level website views can be added later. The current website uses aggregate other debt.</p>
+        </div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="chart-header">
+          <div>
+            <h2 id="chartTitle">Country comparison</h2>
+            <p id="chartSubtitle">Quarterly index comparison</p>
+          </div>
+          <div class="actions">
+            <div id="legend" class="legend"></div>
+            <div class="button-row">
+              <button id="downloadCsv" type="button">Download CSV</button>
+              <button id="downloadPng" type="button">Download PNG</button>
+            </div>
+          </div>
+        </div>
+        <svg id="chart" viewBox="0 0 980 420" role="img" aria-label="FER comparison chart"></svg>
+      </section>
+
+      <section class="grid">
+        <article id="data" class="card">
+          <h3>Selected Series</h3>
+          <div id="summaryTable" class="summary"></div>
+        </article>
+        <article id="about" class="card note-card">
+          <h3>About These Charts</h3>
+          <p>
+            These charts focus on debt-based FER for euro-area countries using the currently available other-debt series. The plotted values are quarterly indices, with assets, liabilities, and net positions available through the metric selector.
+          </p>
+          <p>
+            The current website view uses the aggregate BIS LBS other-debt construction. Later versions can extend this layout with sector-specific views while keeping the same comparison interface.
+          </p>
+          <div id="method" class="method-block">
+            <h3>Method</h3>
+            <p>
+              The current construction is based on aggregated BIS LBS other-debt FER series for euro-area countries. This page is designed so that sector-level FER views can be added later without changing the overall navigation or chart workflow.
+            </p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="./app.js?v=20260421ecb" type="module"></script>
+  </body>
+</html>
