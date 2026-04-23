@@ -96,7 +96,7 @@ function formatValue(metric, value) {
     return "NA";
   }
   if (metric.includes("coverage")) {
-    return `${(value * 100).toFixed(1)}%`;
+    return `${(value * 100).toFixed(2)}%`;
   }
   return value.toFixed(2);
 }
@@ -187,7 +187,7 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
     const yPos = y(tickValue);
     add("line", { x1: margin.left, y1: yPos, x2: width - margin.right, y2: yPos, stroke: colors.grid, "stroke-width": 1 });
     const text = add("text", { x: margin.left - 12, y: yPos + 4, "text-anchor": "end", fill: colors.axis, "font-size": 12 });
-    text.textContent = coverageOnly ? `${Math.round(tickValue * 100)}%` : tickValue.toFixed(1);
+    text.textContent = coverageOnly ? `${(tickValue * 100).toFixed(2)}%` : tickValue.toFixed(1);
   }
 
   add("line", { x1: margin.left, y1: margin.top, x2: margin.left, y2: height - margin.bottom, stroke: colors.axis, "stroke-width": 1.2 });
