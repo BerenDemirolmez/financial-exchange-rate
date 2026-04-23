@@ -96,7 +96,7 @@ function formatValue(metric, value) {
     return "NA";
   }
   if (metric.includes("coverage")) {
-    return `${(value * 100).toFixed(2)}%`;
+    return `${Math.round(value * 100)}%`;
   }
   return value.toFixed(2);
 }
@@ -165,8 +165,8 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
   const minValue = Math.min(...allValues);
   const maxValue = Math.max(...allValues);
   const padding = (maxValue - minValue || 1) * 0.12;
-  const yMin = coverageOnly ? 0 : minValue - padding;
-  const yMax = coverageOnly ? 1 : maxValue + padding;
+  const yMin = coverageOnly ? Math.max(0, minValue - padding) : minValue - padding;
+  const yMax = coverageOnly ? Math.min(1, maxValue + padding) : maxValue + padding;
   const x = (index) => margin.left + (index / Math.max(1, periods.length - 1)) * plotWidth;
   const y = (value) => margin.top + ((yMax - value) / (yMax - yMin || 1)) * plotHeight;
   const yTicks = 5;
@@ -187,7 +187,7 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
     const yPos = y(tickValue);
     add("line", { x1: margin.left, y1: yPos, x2: width - margin.right, y2: yPos, stroke: colors.grid, "stroke-width": 1 });
     const text = add("text", { x: margin.left - 12, y: yPos + 4, "text-anchor": "end", fill: colors.axis, "font-size": 12 });
-    text.textContent = coverageOnly ? `${(tickValue * 100).toFixed(2)}%` : tickValue.toFixed(1);
+    text.textContent = coverageOnly ? `${Math.round(tickValue * 100)}%` : tickValue.toFixed(1);
   }
 
   add("line", { x1: margin.left, y1: margin.top, x2: margin.left, y2: height - margin.bottom, stroke: colors.axis, "stroke-width": 1.2 });
