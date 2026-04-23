@@ -156,6 +156,7 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
   const margin = { top: 24, right: 24, bottom: 56, left: 64 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
+  const coverageOnly = rows.every((row) => row.metric.includes("coverage"));
   const allValues = rows.flatMap((row) => row.values).filter((value) => value != null && Number.isFinite(value));
   if (!allValues.length) {
     showMessage("No finite values for this selection", "Try another country or sector");
@@ -164,8 +165,8 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
   const minValue = Math.min(...allValues);
   const maxValue = Math.max(...allValues);
   const padding = (maxValue - minValue || 1) * 0.12;
-  const yMin = minValue - padding;
-  const yMax = maxValue + padding;
+  const yMin = coverageOnly ? 0 : minValue - padding;
+  const yMax = coverageOnly ? 1 : maxValue + padding;
   const x = (index) => margin.left + (index / Math.max(1, periods.length - 1)) * plotWidth;
   const y = (value) => margin.top + ((yMax - value) / (yMax - yMin || 1)) * plotHeight;
   const yTicks = 5;
@@ -186,7 +187,7 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
     const yPos = y(tickValue);
     add("line", { x1: margin.left, y1: yPos, x2: width - margin.right, y2: yPos, stroke: colors.grid, "stroke-width": 1 });
     const text = add("text", { x: margin.left - 12, y: yPos + 4, "text-anchor": "end", fill: colors.axis, "font-size": 12 });
-    text.textContent = tickValue.toFixed(1);
+    text.textContent = coverageOnly ? `${Math.round(tickValue * 100)}%` : tickValue.toFixed(1);
   }
 
   add("line", { x1: margin.left, y1: margin.top, x2: margin.left, y2: height - margin.bottom, stroke: colors.axis, "stroke-width": 1.2 });
@@ -204,7 +205,7 @@ function drawChart(periods, rows, colorMap, dashMap = {}) {
     text.textContent = periods[periods.length - 1];
   }
 
-  if (rows.every((row) => !row.metric.includes("coverage"))) {
+  if (!coverageOnly) {
     const yBase = y(100);
     add("line", { x1: margin.left, y1: yBase, x2: width - margin.right, y2: yBase, stroke: "#999999", "stroke-dasharray": "4 4", "stroke-width": 1.2 });
   }
