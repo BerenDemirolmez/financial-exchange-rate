@@ -1,5 +1,6 @@
 const chart = document.getElementById("chart");
 const legend = document.getElementById("legend");
+const viewSelect = document.getElementById("viewSelect");
 const countrySelect = document.getElementById("countrySelect");
 const metricSelect = document.getElementById("metric");
 const sectorSelect = document.getElementById("sectorSelect");
@@ -35,8 +36,15 @@ let currentView = null;
 let debugStage = "startup";
 
 function normalizeData(raw) {
+  const legacyView = {
+    other_debt: {
+      aggregate: raw.aggregate || raw.series || {},
+      sector: raw.sector || {},
+    },
+  };
   return {
     ...raw,
+    views: raw.views || legacyView,
     aggregate: raw.aggregate || raw.series || {},
     sectors: raw.sectors || [],
     sector: raw.sector || {},
@@ -114,7 +122,13 @@ function getSelectedMetrics() {
 }
 
 function getSeries(data, countryCode) {
-  return data.aggregate[countryCode];
+  const selectedView = viewSelect?.value || "other_debt";
+  const selectedSector = sectorSelect?.value || "aggregate";
+  const view = data.views?.[selectedView] || data.views?.other_debt || { aggregate: {}, sector: {} };
+  if (selectedSector !== "aggregate") {
+    return view.sector?.[countryCode]?.[selectedSector];
+  }
+  return view.aggregate?.[countryCode];
 }
 
 function renderLegend(items, colorMap, dashMap = {}) {
@@ -274,7 +288,10 @@ function downloadPng() {
 function render(data) {
   const selectedCodes = getSelectedCountryCodes();
   const selectedMetrics = getSelectedMetrics();
-  const scopeLabel = sectorSelect?.value === "aggregate" ? "Aggregate other debt" : "Aggregate other debt";
+  const selectedView = viewSelect?.value || "other_debt";
+  const selectedSector = sectorSelect?.value || "aggregate";
+  const scopeBase = selectedView === "debt_asset" ? "Debt asset" : "Other debt";
+  const scopeLabel = selectedSector === "aggregate" ? `Aggregate ${scopeBase.toLowerCase()}` : `${scopeBase} • ${selectedSector}`;
 
   if (!selectedCodes.length) {
     showMessage("Select at least one country", scopeLabel);
@@ -330,7 +347,12 @@ function render(data) {
   );
   const dashMap = Object.fromEntries(alignedRows.map((row) => [row.key, row.dash]));
 
-  currentView = { mode: "aggregate", metric: selectedMetrics.join("_"), periods, rows: alignedRows };
+  currentView = {
+    mode: `${selectedView}_${selectedSector}`,
+    metric: selectedMetrics.join("_"),
+    periods,
+    rows: alignedRows,
+  };
 
   chartTitle.textContent = selectedCountries.map((country) => country.name).join(", ");
   chartSubtitle.textContent = `${selectedMetrics.map((metric) => metricLabels[metric]).join(" • ")} • ${scopeLabel}`;
@@ -377,7 +399,7 @@ async function init() {
     render(data);
   };
 
-  [countrySelect, metricSelect, sectorSelect].forEach((element) => {
+  [viewSelect, countrySelect, metricSelect, sectorSelect].forEach((element) => {
     element.addEventListener("change", update);
   });
   downloadCsvButton.addEventListener("click", () => currentView && downloadCsv(currentView));
