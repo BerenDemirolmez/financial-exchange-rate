@@ -290,7 +290,12 @@ function render(data) {
   const selectedMetrics = getSelectedMetrics();
   const selectedView = viewSelect?.value || "other_debt";
   const selectedSector = sectorSelect?.value || "aggregate";
-  const scopeBase = selectedView === "debt_asset" ? "Debt asset" : "Other debt";
+  const scopeBase =
+    selectedView === "debt_asset"
+      ? "Debt asset"
+      : selectedView === "debt"
+        ? "Debt"
+        : "Other debt";
   const scopeLabel = selectedSector === "aggregate" ? `Aggregate ${scopeBase.toLowerCase()}` : `${scopeBase} • ${selectedSector}`;
 
   if (!selectedCodes.length) {
