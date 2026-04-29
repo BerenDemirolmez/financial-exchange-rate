@@ -16,7 +16,6 @@ const metricLabels = {
   net_index: "Net FER",
   asset_coverage: "Asset coverage",
   liability_coverage: "Liability coverage",
-  net_coverage: "Net coverage",
 };
 
 const metricStyles = {
@@ -25,7 +24,6 @@ const metricStyles = {
   net_index: { shortLabel: "Net", dash: "2 6" },
   asset_coverage: { shortLabel: "Asset coverage", dash: "" },
   liability_coverage: { shortLabel: "Liability coverage", dash: "8 6" },
-  net_coverage: { shortLabel: "Net coverage", dash: "2 6" },
 };
 
 const palette = ["#0b5cab", "#c04b00", "#0e8a5f", "#9c2f7f", "#996c00", "#0083a3", "#6b52c8", "#8d4f23"];
