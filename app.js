@@ -1,6 +1,5 @@
 const chart = document.getElementById("chart");
 const legend = document.getElementById("legend");
-const viewSelect = document.getElementById("viewSelect");
 const countrySelect = document.getElementById("countrySelect");
 const metricSelect = document.getElementById("metric");
 const sectorSelect = document.getElementById("sectorSelect");
@@ -122,9 +121,9 @@ function getSelectedMetrics() {
 }
 
 function getSeries(data, countryCode) {
-  const selectedView = viewSelect?.value || "other_debt";
+  const selectedView = "debt";
   const selectedSector = sectorSelect?.value || "aggregate";
-  const view = data.views?.[selectedView] || data.views?.other_debt || { aggregate: {}, sector: {} };
+  const view = data.views?.[selectedView] || { aggregate: {}, sector: {} };
   if (selectedSector !== "aggregate") {
     return view.sector?.[countryCode]?.[selectedSector];
   }
@@ -288,15 +287,8 @@ function downloadPng() {
 function render(data) {
   const selectedCodes = getSelectedCountryCodes();
   const selectedMetrics = getSelectedMetrics();
-  const selectedView = viewSelect?.value || "other_debt";
   const selectedSector = sectorSelect?.value || "aggregate";
-  const scopeBase =
-    selectedView === "debt_asset"
-      ? "Debt asset"
-      : selectedView === "debt"
-        ? "Debt"
-        : "Other debt";
-  const scopeLabel = selectedSector === "aggregate" ? `Aggregate ${scopeBase.toLowerCase()}` : `${scopeBase} • ${selectedSector}`;
+  const scopeLabel = selectedSector === "aggregate" ? "Aggregate debt" : `Debt • ${selectedSector}`;
 
   if (!selectedCodes.length) {
     showMessage("Select at least one country", scopeLabel);
@@ -353,7 +345,7 @@ function render(data) {
   const dashMap = Object.fromEntries(alignedRows.map((row) => [row.key, row.dash]));
 
   currentView = {
-    mode: `${selectedView}_${selectedSector}`,
+    mode: `debt_${selectedSector}`,
     metric: selectedMetrics.join("_"),
     periods,
     rows: alignedRows,
@@ -404,7 +396,7 @@ async function init() {
     render(data);
   };
 
-  [viewSelect, countrySelect, metricSelect, sectorSelect].forEach((element) => {
+  [countrySelect, metricSelect, sectorSelect].forEach((element) => {
     element.addEventListener("change", update);
   });
   downloadCsvButton.addEventListener("click", () => currentView && downloadCsv(currentView));

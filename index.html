@@ -33,15 +33,6 @@
           <p>Select countries, metrics, and scope to compare quarterly FER series.</p>
         </div>
         <div class="control">
-          <label for="viewSelect">Series family</label>
-          <select id="viewSelect">
-            <option value="other_debt">Other debt</option>
-            <option value="debt">Debt</option>
-            <option value="debt_asset">Debt asset</option>
-          </select>
-          <p class="help-text">Switch between other debt, full debt, and debt-asset FER views.</p>
-        </div>
-        <div class="control">
           <label for="countrySelect">Countries</label>
           <select id="countrySelect" multiple size="6"></select>
           <p class="help-text">Hold Command on Mac or Ctrl on Windows to select multiple countries.</p>
@@ -96,15 +87,15 @@
         <article id="about" class="card note-card">
           <h3>About These Charts</h3>
           <p>
-            These charts focus on debt-based FER for euro-area countries using the currently available other-debt series. The plotted values are quarterly indices, with assets, liabilities, and net positions available through the metric selector.
+            These charts show quarterly debt-based financial exchange rate indices for euro-area countries. The metric selector lets you compare asset, liability, and net debt FER.
           </p>
           <p>
-            The current website view uses the aggregate BIS LBS other-debt construction. Later versions can extend this layout with sector-specific views while keeping the same comparison interface.
+            Aggregate debt FER combines other debt from BIS LBS with portfolio debt assets and liabilities. Sector views cover aggregate, bank, NBFI, NFC, and government.
           </p>
           <div id="method" class="method-block">
             <h3>Method</h3>
             <p>
-              The current construction is based on aggregated BIS LBS other-debt FER series for euro-area countries. This page is designed so that sector-level FER views can be added later without changing the overall navigation or chart workflow.
+              In the current construction, BIS LBS other debt is treated as the banking-sector component. Portfolio debt assets are based on IMF PIP weights, while portfolio debt liabilities are based on BIS IDS sector and currency information.
             </p>
           </div>
         </article>
