@@ -1,6 +1,7 @@
 const chart = document.getElementById("chart");
 const legend = document.getElementById("legend");
 const countrySelect = document.getElementById("countrySelect");
+const frequencySelect = document.getElementById("frequencySelect");
 const metricSelect = document.getElementById("metric");
 const sectorSelect = document.getElementById("sectorSelect");
 const summaryTable = document.getElementById("summaryTable");
@@ -118,14 +119,19 @@ function getSelectedMetrics() {
   return Array.from(metricSelect.selectedOptions).map((option) => option.value);
 }
 
+function getSelectedFrequency() {
+  return frequencySelect?.value || "quarterly";
+}
+
 function getSeries(data, countryCode) {
   const selectedView = "debt";
   const selectedSector = sectorSelect?.value || "aggregate";
+  const selectedFrequency = getSelectedFrequency();
   const view = data.views?.[selectedView] || { aggregate: {}, sector: {} };
   if (selectedSector !== "aggregate") {
-    return view.sector?.[countryCode]?.[selectedSector];
+    return view.sector?.[selectedFrequency]?.[countryCode]?.[selectedSector];
   }
-  return view.aggregate?.[countryCode];
+  return view.aggregate?.[selectedFrequency]?.[countryCode];
 }
 
 function renderLegend(items, colorMap, dashMap = {}) {
@@ -286,7 +292,10 @@ function render(data) {
   const selectedCodes = getSelectedCountryCodes();
   const selectedMetrics = getSelectedMetrics();
   const selectedSector = sectorSelect?.value || "aggregate";
+  const selectedFrequency = getSelectedFrequency();
   const scopeLabel = selectedSector === "aggregate" ? "Aggregate debt" : `Debt • ${selectedSector}`;
+  const frequencyLabel = data.frequencies?.find((entry) => entry.code === selectedFrequency)?.name || selectedFrequency;
+  const frequencyNote = data.frequency_notes?.[selectedFrequency] || "";
 
   if (!selectedCodes.length) {
     showMessage("Select at least one country", scopeLabel);
@@ -343,14 +352,14 @@ function render(data) {
   const dashMap = Object.fromEntries(alignedRows.map((row) => [row.key, row.dash]));
 
   currentView = {
-    mode: `debt_${selectedSector}`,
+    mode: `debt_${selectedSector}_${selectedFrequency}`,
     metric: selectedMetrics.join("_"),
     periods,
     rows: alignedRows,
   };
 
   chartTitle.textContent = selectedCountries.map((country) => country.name).join(", ");
-  chartSubtitle.textContent = `${selectedMetrics.map((metric) => metricLabels[metric]).join(" • ")} • ${scopeLabel}`;
+  chartSubtitle.textContent = `${selectedMetrics.map((metric) => metricLabels[metric]).join(" • ")} • ${scopeLabel} • ${frequencyLabel}${frequencyNote ? ` • ${frequencyNote}` : ""}`;
   renderLegend(
     alignedRows.map((row) => ({ key: row.key, label: row.label })),
     colorMap,
@@ -394,7 +403,7 @@ async function init() {
     render(data);
   };
 
-  [countrySelect, metricSelect, sectorSelect].forEach((element) => {
+  [countrySelect, frequencySelect, metricSelect, sectorSelect].forEach((element) => {
     element.addEventListener("change", update);
   });
   downloadCsvButton.addEventListener("click", () => currentView && downloadCsv(currentView));

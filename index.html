@@ -38,6 +38,15 @@
           <p class="help-text">Hold Command on Mac or Ctrl on Windows to select multiple countries.</p>
         </div>
         <div class="control">
+          <label for="frequencySelect">Frequency</label>
+          <select id="frequencySelect">
+            <option value="annual">Annual</option>
+            <option value="quarterly" selected>Quarterly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <p class="help-text">Annual uses Q4 snapshots. Monthly holds weights fixed within the relevant quarter or year and lets only exchange rates vary.</p>
+        </div>
+        <div class="control">
           <label for="metric">Metrics</label>
           <select id="metric" multiple size="6">
             <option value="asset_index">Asset FER debt</option>
@@ -86,10 +95,13 @@
         <article id="about" class="card note-card">
           <h3>About These Charts</h3>
           <p>
-            These charts show quarterly debt-based financial exchange rate indices for euro-area countries. The metric selector lets you compare asset, liability, and net debt FER.
+            These charts show debt-based financial exchange rate indices for euro-area countries. The metric selector lets you compare asset, liability, and net debt FER across annual, quarterly, and monthly views.
           </p>
           <p>
             Aggregate debt FER combines other debt from BIS LBS with portfolio debt assets and liabilities. Sector views cover aggregate, bank, NBFI, NFC, and government.
+          </p>
+          <p>
+            The annual series are Q4 snapshots of the quarterly FER indices. The monthly series hold portfolio and balance-sheet weights fixed within the relevant quarter or year and let variation come from monthly BIS exchange-rate changes.
           </p>
           <div id="method" class="method-block">
             <h3>Method</h3>
